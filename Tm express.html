@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TM Express - Mensajería Rápida en Guatemala</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #E65100;
+            --secondary-color: #000000;
+            --accent-color: #F5F5F5;
+            --text-color: #212121;
+            --light-color: #FFFFFF;
+            --dark-bg: #1A1A1A;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            background-color: var(--light-color);
+        }
+        
+        .bg-primary-custom {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .bg-secondary-custom {
+            background-color: var(--secondary-color) !important;
+        }
+        
+        .bg-dark-custom {
+            background-color: var(--dark-bg) !important;
+        }
+        
+        .bg-accent {
+            background-color: var(--accent-color);
+        }
+        
+        .text-primary-custom {
+            color: var(--primary-color) !important;
+        }
+        
+        .text-secondary-custom {
+            color: var(--secondary-color) !important;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: #BF360C;
+            border-color: #BF360C;
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline-custom:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: var(--secondary-color) !important;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1519457431-44ccd64a579b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 140px 0;
+            text-align: center;
+        }
+        
+        .service-card {
+            transition: transform 0.3s;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            height: 100%;
+            background: white;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+        
+        .service-icon {
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            margin-bottom: 1.2rem;
+        }
+        
+        .tracking-form {
+            background: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+        
+        .stats-number {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .testimonial-card {
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            height: 100%;
+            border-top: 5px solid var(--primary-color);
+            background: white;
+            transition: transform 0.3s;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .client-logo {
+            height: 80px;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: all 0.3s;
+        }
+        
+        .client-logo:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+        
+        .footer {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 60px 0 25px;
+        }
+        
+        .social-icon {
+            color: white;
+            font-size: 1.6rem;
+            margin-right: 18px;
+            transition: color 0.3s;
+        }
+        
+        .social-icon:hover {
+            color: var(--primary-color);
+        }
+        
+        .logo-text {
+            font-weight: bold;
+            font-size: 2rem;
+        }
+        
+        .logo-primary {
+            color: var(--primary-color);
+        }
+        
+        .logo-secondary {
+            color: var(--light-color);
+        }
+        
+        .coverage-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+        
+        .vehicle-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            background: white;
+        }
+        
+        .vehicle-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .testimonial-form {
+            background: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .value-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            height: 100%;
+            transition: all 0.3s;
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+        }
+        
+        .value-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .process-step {
+            position: relative;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            height: 100%;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .cta-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1535223289827-42f1e9919769?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 80px 0;
+            color: white;
+        }
+        
+        .feature-box {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .feature-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .accordion-button:not(.collapsed) {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(0,0,0,.125);
+        }
+        
+        .coverage-map {
+            background: #f0f0f0; 
+            height: 300px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span class="logo-text logo-secondary">TM</span> 
+                <span class="logo-text logo-primary">EXPRESS</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#vehicles">Flota</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#coverage">Cobertura</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#process">Cómo Funciona</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#faq">Preguntas Frecuentes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contacto</a>
+                    </li>
+                </ul>
+                <div class="navbar-nav ms-3">
+                    <a class="btn btn-primary-custom" href="https://wa.me/50255146305" target="_blank">
+                        <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-4">Transporte y Mensajería Rápida y Confiable</h1>
+            <p class="lead mb-5">Servicios de mensajería en motocicleta en la ciudad capital y municipios aledaños. Transporte pesado a nivel nacional.</p>
+            <div class="d-flex justify-content-center flex-wrap gap-3">
+                <a href="https://wa.me/50255146305" target="_blank" class="btn btn-primary-custom btn-lg px-4 py-3">
+                    <i class="fab fa-whatsapp me-2"></i>Solicitar Servicio
+                </a>
+                <a href="#contact" class="btn btn-outline-light btn-lg px-4 py-3">Contactarnos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section id="services" class="py-5 bg-accent">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title">Nuestros Servicios</h2>
+                <p class="lead">Soluciones de mensajería adaptadas a tus necesidades</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card service-card">
+                        <div class="card-body text-center p-4">
+                            <div class="service-icon">
+                                <i class="fas fa-motorcycle"></i>
+                            </div>
+                            <h3 class="card-title">Mensajería en Moto</h3>
+                            <p class="card-text">Servicio rápido de mensajería en motocicleta para envíos urgentes en la ciudad capital y municipios aledaños.</p>
+                            <span class="coverage-badge">Área Metropolitana</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card service-card">
+                        <div class="card-body text-center p-4">
+                            <div class="service-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <h3 class="card-title">Transporte en Panel</h3>
+                            <p class="card-text">Servicio de transporte en vehículos panel para cargas medianas dentro de la ciudad y a nivel nacional.</p>
+                            <span class="coverage-badge">Nacional</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card service-card">
+                        <div class="card-body text-center p-4">
+                            <div class="service-icon">
+                                <i class="fas fa-truck-loading"></i>
+                            </div>
+                            <h3 class="card-title">Transporte Pesado</h3>
+                            <p class="card-text">Servicio de transporte pesado con cabezales para cargas de mayor volumen y peso a nivel nacional.</p>
+                            <span class="coverage-badge">Nacional</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Valores -->
+    <section class="py-5 bg-dark-custom">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title text-white">Nuestros Valores</h2>
+                <p class="lead text-white">Lo que nos define y nos diferencia</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Rapidez</h3>
+                        <p>Entregas express con el menor tiempo posible. Sabemos que tu tiempo es valioso.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <h3>Precios Competitivos</h3>
+                        <p>Tarifas justas y transparentes sin costos ocultos. Calidad a precios accesibles.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Fiabilidad</h3>
+                        <p>Tu mercancía en las mejores manos. Entregas seguras y puntuales siempre.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flota de Vehículos -->
+    <section id="vehicles" class="py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title">Nuestra Flota</h2>
+                <p class="lead">Vehículos para todo tipo de necesidades de transporte</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card vehicle-card">
+                        <img src="https://via.placeholder.com/300x200/333/fff?text=Motocicletas+TM+Express" class="card-img-top" alt="Motocicletas">
+                        <div class="card-body">
+                            <h5 class="card-title">Motocicletas</h5>
+                            <p class="card-text">Flota de motocicletas para mensajería rápida en la ciudad.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card vehicle-card">
+                        <img src="https://via.placeholder.com/300x200/333/fff?text=Vehículos+Panel+TM+Express" class="card-img-top" alt="Panel">
+                        <div class="card-body">
+                            <h5 class="card-title">Vehículos Panel</h5>
+                            <p class="card-text">Vehículos panel disponibles para transporte de carga mediana.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card vehicle-card">
+                        <img src="https://via.placeholder.com/300x200/333/fff?text=Camiones+TM+Express" class="card-img-top" alt="Camión 3.5 toneladas">
+                        <div class="card-body">
+                            <h5 class="card-title">Camión 3.5 Toneladas</h5>
+                            <p class="card-text">Camión con capacidad de 3.5 toneladas para cargas más grandes.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card vehicle-card">
+                        <img src="https://via.placeholder.com/300x200/333/fff?text=Cabezales+TM+Express" class="card-img-top" alt="Cabezales">
+                        <div class="card-body">
+                            <h5 class="card-title">Cabezales</h5>
+                            <p class="card-text">Tres cabezales para transporte pesado a nivel nacional.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cobertura -->
+    <section id="coverage" class="py-5 bg-accent">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title">Área de Cobertura</h2>
+                <p class="lead">Llegamos a donde necesites que lleguemos</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title text-primary-custom">Mensajería en Moto</h4>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Ciudad de Guatemala</li>
+                                <li class="list-group-item">Mixco</li>
+                                <li class="list-group-item">Villa Nueva</li>
+                                <li class="list-group-item">San Miguel Petapa</li>
+                                <li class="list-group-item">Santa Catarina Pinula</li>
+                                <li class="list-group-item">Villa Canales</li>
+                                <li class="list-group-item">y municipios aledaños</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title text-primary-custom">Transporte Nacional</h4>
+                            <p class="card-text">Nuestros servicios de transporte en panel, camión de 3.5 toneladas y cabezales tienen cobertura a nivel nacional, llegando a todos los departamentos de Guatemala.</p>
+                            <div class="mt-4">
+                                <h5>Departamentos principales:</h5>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <ul>
+                                            <li>Guatemala</li>
+                                            <li>Sacatepéquez</li>
+                                            <li>Escuintla</li>
+                                            <li>Quetzaltenango</li>
+                                            <li>Petén</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <ul>
+                                            <li>Alta Verapaz</li>
+                                            <li>Baja Verapaz</li>
+                                            <li>Retalhuleu</li>
+                                            <li>Zacapa</li>
+                                            <li>y más...</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mapa de Cobertura -->
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title">Mapa de Cobertura</h2>
+                <p class="lead">Áreas que cubrimos en Guatemala</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="text-primary-custom">Cobertura de Motocicletas</h4>
+                            <div class="coverage-map">
+                                <div style="text-align: center;">
+                                    <i class="fas fa-map-marked-alt" style="font-size: 3rem; color: var(--primary-color);"></i>
+                                    <p class="mt-2">Ciudad de Guatemala y municipios aledaños</p>
+                                </div>
+                            </div>
+                            <ul class="mt-3">
+                                <li>Mixco</li>
+                                <li>Villa Nueva</li>
+                                <li>San Miguel Petapa</li>
+                                <li>Santa Catarina Pinula</li>
+                                <li>Villa Canales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="text-primary-custom">Cobertura Nacional</h4>
+                            <div class="coverage-map">
+                                <div style="text-align: center;">
+                                    <i class="fas fa-truck" style="font-size: 3rem; color: var(--primary-color);"></i>
+                                    <p class="mt-2">Toda Guatemala</p>
+                                </div>
+                            </div>
+                            <p class="mt-3">Nuestros servicios de transporte pesado y paneles llegan a todos los departamentos del país.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Proceso -->
+    <section id="process" class="py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title">Cómo Funciona</h2>
+                <p class="lead">Proceso simple y eficiente para tus envíos</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <h4 class="mt-3">Solicita</h4>
+                        <p>Contáctanos por WhatsApp o teléfono para solicitar el servicio.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <h4 class="mt-3">Programa</h4>
+                        <p>Coordinamos la recolección y te damos un tiempo estimado de entrega.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <h4 class="mt-3">Envía</h4>
+                        <p>Recogemos tu paquete y lo transportamos de forma segura.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <h4 class="mt-3">Entrega</h4>
+                        <p>Tu paquete es entregado en el destino en el tiempo acordado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-5 bg-dark-custom text-white">
+        <div class="container py-5">
+            <div class="row text-center">
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stats-number">98%</div>
+                    <p>Entregas a tiempo</p>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stats-number">20+</div>
+                    <p>Municipios cubiertos</p>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stats-number">7+</div>
+                    <p>Vehículos en flota</p>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stats-number">500+</div>
+                    <p>Clientes satisfechos</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Preguntas Frecuentes -->
+    <section id="faq" class="py-5 bg-accent">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title">Preguntas Frecuentes</h2>
+                <p class="lead">Resolvemos tus dudas más comunes</p>
+            </div>
+            
+            <div class="accordion" id="accordionFAQ">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                            ¿Cuál es el horario de servicio?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body">
+                            Nuestro horario de atención es de lunes a viernes de 7:00 AM a 5:00 PM, y sábados de 8:00 AM a 12:00 PM.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            ¿Hacen envíos el mismo día?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body">
+                            Sí, ofrecemos servicio express con entrega el mismo día para envíos en la ciudad capital.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            ¿Cómo puedo pagar por el servicio?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body">
+                            Aceptamos efectivo, transferencias bancarias y pronto implementaremos pagos con tarjeta.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                            ¿Qué tipos de paquetes pueden transportar?
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body">
+                            Transportamos documentos, paquetes, mercadería and cargas de diversos tamaños. Contamos con diferentes tipos de vehículos para adaptarnos a tus necesidades.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                            ¿Ofrecen servicio de rastreo?
+                        </button>
+                    </h2>
+                    <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body">
+                            Sí, para envíos nacionales proporcionamos número de seguimiento y updates sobre el estado de tu paquete.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-4">¿Necesitas un servicio de mensajería confiable?</h2>
+            <p class="lead mb-5">Contáctanos ahora y recibe una cotización sin compromiso</p>
+            <a href="https://wa.me/50255146305" target="_blank" class="btn btn-primary-custom btn-lg px-5 py-3">
+                <i class="fab fa-whatsapp me-2"></i>Contactar por WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contact" class="py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title">Contáctanos</h2>
+                <p class="lead">Estamos aquí para ayudarte</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="service-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <h4>WhatsApp</h4>
+                            <p>5514-6305<br>7:00 AM - 5:00 PM</p>
+                            <a href="https://wa.me/50255146305" target="_blank" class="btn btn-primary-custom mt-2">Enviar mensaje</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="service-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <h4>Teléfono</h4>
+                            <p>5514-6305<br>Lun-Vie: 7:00 AM - 5:00 PM</p>
+                            <a href="tel:50255146305" class="btn btn-outline-custom mt-2">Llamar ahora</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-md-8 mx-auto">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-5">
+                            <h3 class="text-center mb-4">Envía un mensaje</h3>
+                            <form id="contact-form">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="name" class="form-label">Nombre completo</label>
+                                        <input type="text" class="form-control" id="name" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="phone" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="subject" class="form-label">Asunto</label>
+                                    <input type="text" class="form-control" id="subject" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Mensaje</label>
+                                    <textarea class="form-control" id="message" rows="5" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary-custom btn-lg w-100">Enviar mensaje</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="text-white">TM Express</h4>
+                    <p>Transporte y Mensajería Rápida y Confiable en Guatemala. Servicios de mensajería en moto y transporte nacional.</p>
+                    <div class="mt-3">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/50255146305" target="_blank" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="text-white">Enlaces rápidos</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Inicio</a></li>
+                        <li><a href="#services" class="text-white text-decoration-none">Servicios</a></li>
+                        <li><a href="#vehicles" class="text-white text-decoration-none">Flota</a></li>
+                        <li><a href="#coverage" class="text-white text-decoration-none">Cobertura</a></li>
+                        <li><a href="#contact" class="text-white text-decoration-none">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5 class="text-white">Servicios</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Mensajería en Moto</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Transporte en Panel</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Transporte Pesado</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Camión 3.5 Toneladas</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5 class="text-white">Horario de atención</h5>
+                    <p>Lunes a Viernes: 7:00 AM - 5:00 PM<br>Sábados: 8:00 AM - 12:00 PM<br>Domingos: Cerrado</p>
+                    <div class="mt-3">
+                        <a href="https://wa.me/50255146305" target="_blank" class="btn btn-primary-custom btn-sm">
+                            <i class="fab fa-whatsapp me-2"></i>Contactar por WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="mt-4 mb-4">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2023 TM Express. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-white text-decoration-none me-3">Términos y Condiciones</a>
+                    <a href="#" class="text-white text-decoration-none">Política de Privacidad</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Funcionalidad para el formulario de contacto
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('¡Gracias por tu mensaje! Te contactaremos pronto.');
+            this.reset();
+        });
+        
+        // Smooth scroll para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                if (this.getAttribute('href') !== '#') {
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
