@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TM Express - Sistema de Gestión de Flota</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Animación de fondo */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 87, 34, 0.1);
+    animation: float 20s infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-50px) rotate(180deg); }
+}
+
+/* Contenedor principal */
+.login-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 450px;
+    margin: 20px;
+    animation: slideUp 0.6s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Tarjeta de login */
+.login-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: transform 0.3s;
+    border: 1px solid #ff5722;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Header de la tarjeta */
+.card-header {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    color: white;
+    padding: 40px 30px;
+    text-align: center;
+    border-bottom: 3px solid #ff5722;
+}
+
+.logo {
+    font-size: 60px;
+    margin-bottom: 15px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.card-header h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #ff5722;
+}
+
+.card-header p {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Cuerpo de la tarjeta */
+.card-body {
+    padding: 40px 30px;
+}
+
+/* Grupo de formulario */
+.form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ff5722;
+    font-size: 18px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #ff5722;
+    box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+}
+
+/* Botón de login */
+.btn-login {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #ff5722 0%, #e64a19 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 15px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(255, 87, 34, 0.4);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+/* Mensajes de error/éxito */
+.message {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: center;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.message.error {
+    background: #ffebee;
+    color: #c62828;
+    border-left: 4px solid #c62828;
+}
+
+.message.success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-left: 4px solid #2e7d32;
+}
+
+.message.info {
+    background: #fff3e0;
+    color: #ff5722;
+    border-left: 4px solid #ff5722;
+}
+
+/* Opciones adicionales */
+.login-options {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.login-options a {
+    color: #ff5722;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.login-options a:hover {
+    color: #e64a19;
+    text-decoration: underline;
+}
+
+/* Demo credentials */
+.demo-credentials {
+    margin-top: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #ff5722;
+}
+
+.demo-title {
+    font-size: 12px;
+    color: #ff5722;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.credential-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.credential-item {
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid #e0e0e0;
+}
+
+.credential-item:hover {
+    transform: scale(1.05);
+    border-color: #ff5722;
+    box-shadow: 0 2px 8px rgba(255, 87, 34, 0.2);
+}
+
+.credential-item .role {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.credential-item .user {
+    font-size: 12px;
+    font-weight: bold;
+    color: #ff5722;
+}
+
+.credential-item .pass {
+    font-size: 10px;
+    color: #999;
+}
+
+/* Footer */
+.card-footer {
+    background: #f8f9fa;
+    padding: 15px;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    border-top: 1px solid #ff5722;
+}
+
+/* Spinner de carga */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .card-body {
+        padding: 30px 20px;
+    }
+    
+    .logo {
+        font-size: 40px;
+    }
+    
+    .card-header h2 {
+        font-size: 24px;
+    }
+    
+    .credential-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="background-animation" id="bgAnimation"></div>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="card-header">
+            <div class="logo">🚛</div>
+            <h2>TM Express</h2>
+            <p>Sistema Inteligente de Gestión de Flota</p>
+        </div>
+        
+        <div class="card-body">
+            <div id="messageContainer"></div>
+            
+            <form id="loginForm" onsubmit="event.preventDefault(); iniciarSesion();">
+                <div class="form-group">
+                    <label>📧 Usuario o Email</label>
+                    <div class="input-icon">
+                        <i>👤</i>
+                        <input type="text" id="username" placeholder="Ingrese su usuario" autocomplete="off" autofocus>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>🔒 Contraseña</label>
+                    <div class="input-icon">
+                        <i>🔑</i>
+                        <input type="password" id="password" placeholder="Ingrese su contraseña">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span id="btnText">Ingresar al Sistema</span>
+                    <span id="btnSpinner" style="display: none;"></span>
+                </button>
+            </form>
+            
+            <div class="login-options">
+                <a href="#" onclick="mostrarAyuda()">¿Olvidó su contraseña?</a>
+            </div>
+            
+            <div class="demo-credentials">
+                <div class="demo-title">📋 CUENTAS DE DEMO (Click para autocompletar)</div>
+                <div class="credential-grid">
+                    <div class="credential-item" onclick="autocompletar('dueño', '1234')">
+                        <div class="role">👑</div>
+                        <div class="user">dueño</div>
+                        <div class="pass">••••</div>
+                    </div>
+                    <div class="credential-item" onclick="autocompletar('gerente', '1234')">
+                        <div class="role">👔</div>
+                        <div class="user">gerente</div>
+                        <div class="pass">••••</div>
+                    </div>
+                    <div class="credential-item" onclick="autocompletar('supervisor', '1234')">
+                        <div class="role">📊</div>
+                        <div class="user">supervisor</div>
+                        <div class="pass">••••</div>
+                    </div>
+                    <div class="credential-item" onclick="autocompletar('pedro', '1234')">
+                        <div class="role">👨‍✈️</div>
+                        <div class="user">pedro</div>
+                        <div class="pass">••••</div>
+                    </div>
+                    <div class="credential-item" onclick="autocompletar('juan', '1234')">
+                        <div class="role">👨‍✈️</div>
+                        <div class="user">juan</div>
+                        <div class="pass">••••</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer">
+            © 2024 TM Express - Todos los derechos reservados
+        </div>
+    </div>
+</div>
+
+<script>
+
+// Base de datos de usuarios
+let usuarios = {
+    'dueño': { password: '1234', rol: 'admin', nombre: 'Dueño Principal' },
+    'admin': { password: '1234', rol: 'admin', nombre: 'Administrador' },
+    'gerente': { password: '1234', rol: 'supervisor', nombre: 'Gerente General' },
+    'supervisor': { password: '1234', rol: 'supervisor', nombre: 'Supervisor' },
+    'pedro': { password: '1234', rol: 'piloto', nombre: 'Pedro Martínez', conductorId: 'Pedro Martínez' },
+    'juan': { password: '1234', rol: 'piloto', nombre: 'Juan López', conductorId: 'Juan López' }
+}
+
+function cargarUsuariosAdicionales() {
+    try {
+        let datos = JSON.parse(localStorage.getItem("TMEXPRESS_V8")) || {}
+        let pilotosGuardados = datos.pilotos || []
+        pilotosGuardados.forEach(piloto => {
+            if (!usuarios[piloto.usuario]) {
+                usuarios[piloto.usuario] = {
+                    password: piloto.password,
+                    rol: 'piloto',
+                    nombre: piloto.nombre,
+                    conductorId: piloto.conductorId
+                }
+            }
+        })
+    } catch(e) {}
+}
+
+function mostrarMensaje(mensaje, tipo) {
+    let container = document.getElementById('messageContainer')
+    let messageDiv = document.createElement('div')
+    messageDiv.className = `message ${tipo}`
+    messageDiv.innerHTML = mensaje
+    container.innerHTML = ''
+    container.appendChild(messageDiv)
+    
+    setTimeout(() => {
+        messageDiv.style.animation = 'slideUp 0.3s ease reverse'
+        setTimeout(() => messageDiv.remove(), 300)
+    }, 4000)
+}
+
+function crearAnimacionFondo() {
+    for(let i = 0; i < 20; i++) {
+        let circle = document.createElement('div')
+        circle.className = 'circle'
+        let size = Math.random() * 100 + 50
+        circle.style.width = size + 'px'
+        circle.style.height = size + 'px'
+        circle.style.left = Math.random() * 100 + '%'
+        circle.style.top = Math.random() * 100 + '%'
+        circle.style.animationDelay = Math.random() * 20 + 's'
+        circle.style.animationDuration = Math.random() * 20 + 10 + 's'
+        document.getElementById('bgAnimation').appendChild(circle)
+    }
+}
+
+function autocompletar(usuario, password) {
+    document.getElementById('username').value = usuario
+    document.getElementById('password').value = password
+    mostrarMensaje(`🔐 Credenciales de <strong>${usuario}</strong> cargadas. Click en "Ingresar"`, 'info')
+    
+    document.getElementById('username').style.borderColor = '#ff5722'
+    document.getElementById('password').style.borderColor = '#ff5722'
+    setTimeout(() => {
+        document.getElementById('username').style.borderColor = '#e0e0e0'
+        document.getElementById('password').style.borderColor = '#e0e0e0'
+    }, 2000)
+}
+
+function iniciarSesion() {
+    let username = document.getElementById('username').value.toLowerCase().trim()
+    let password = document.getElementById('password').value
+    
+    if (!username || !password) {
+        mostrarMensaje('❌ Por favor ingrese usuario y contraseña', 'error')
+        return
+    }
+    
+    let btn = document.getElementById('loginBtn')
+    let btnText = document.getElementById('btnText')
+    let btnSpinner = document.getElementById('btnSpinner')
+    btnText.style.display = 'none'
+    btnSpinner.style.display = 'inline-block'
+    btn.disabled = true
+    
+    setTimeout(() => {
+        cargarUsuariosAdicionales()
+        
+        if (usuarios[username] && usuarios[username].password === password) {
+            let usuarioActual = {
+                username: username,
+                ...usuarios[username]
+            }
+            
+            localStorage.setItem('usuarioActual', JSON.stringify(usuarioActual))
+            mostrarMensaje('✅ ¡Bienvenido ' + usuarioActual.nombre + '! Redirigiendo...', 'success')
+            
+            setTimeout(() => {
+                window.location.href = 'dashboard.html'
+            }, 1500)
+        } else {
+            mostrarMensaje('❌ Usuario o contraseña incorrectos', 'error')
+            btnText.style.display = 'inline'
+            btnSpinner.style.display = 'none'
+            btn.disabled = false
+            document.getElementById('password').value = ''
+            document.getElementById('password').focus()
+        }
+    }, 800)
+}
+
+function mostrarAyuda() {
+    mostrarMensaje('📞 Contacte al administrador del sistema para restablecer su contraseña', 'info')
+}
+
+document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        iniciarSesion()
+    }
+})
+
+function verificarSesion() {
+    let usuarioActual = localStorage.getItem('usuarioActual')
+    if (usuarioActual) {
+        let usuario = JSON.parse(usuarioActual)
+        mostrarMensaje(`🔄 Sesión anterior encontrada para ${usuario.nombre}. Redirigiendo...`, 'info')
+        setTimeout(() => {
+            window.location.href = 'dashboard.html'
+        }, 1500)
+    }
+}
+
+crearAnimacionFondo()
+cargarUsuariosAdicionales()
+verificarSesion()
+
+document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.parentElement.parentElement.style.transform = 'translateX(5px)'
+    })
+    input.addEventListener('blur', function() {
+        this.parentElement.parentElement.style.transform = 'translateX(0)'
+    })
+})
+
+</script>
+
+</body>
+</html>

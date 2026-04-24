@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TM Express V8 - Dashboard Corporativo</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+}
+
+/* Header con información del usuario */
+.user-header {
+    background: white;
+    padding: 15px 25px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border-left: 5px solid #ff5722;
+    border-bottom: 2px solid #000000;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #000000 0%, #333333 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #ff5722;
+    border: 2px solid #ff5722;
+}
+
+.user-details h3 {
+    margin: 0;
+    color: #000000;
+}
+
+.user-details p {
+    margin: 5px 0 0;
+    font-size: 12px;
+    color: #ff5722;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.role-admin { background: #000000; color: #ff5722; }
+.role-supervisor { background: #ff5722; color: white; }
+.role-piloto { background: #e64a19; color: white; }
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-logout {
+    background: linear-gradient(135deg, #ff5722 0%, #e64a19 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+}
+
+/* Estilos de las cajas */
+.box {
+    background: white;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border-left: 4px solid #ff5722;
+    border-bottom: 2px solid #000000;
+}
+
+.box h2 {
+    color: #000000;
+    border-bottom: 2px solid #ff5722;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estadísticas */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+}
+
+.stat {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    border-bottom: 3px solid #ff5722;
+}
+
+.stat:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(255, 87, 34, 0.3);
+}
+
+.stat h3 {
+    margin: 10px 0 0;
+    font-size: 28px;
+    color: #ff5722;
+}
+
+/* Inputs y selects */
+input, select {
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #ff5722;
+    box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+}
+
+/* Botones */
+button {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #ff5722 0%, #e64a19 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+    background: linear-gradient(135deg, #ff7043 0%, #ff5722 100%);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.delete {
+    background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
+}
+
+.delete:hover {
+    background: linear-gradient(135deg, #ef5350 0%, #c62828 100%);
+}
+
+/* Tablas */
+table {
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    color: #ff5722;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #fff3e0;
+}
+
+/* Alertas */
+.alert {
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.alert-success {
+    background: #e8f5e9;
+    border-left: 4px solid #2e7d32;
+    color: #1b5e20;
+}
+
+.alert-warning {
+    background: #fff3e0;
+    border-left: 4px solid #ff5722;
+    color: #e65100;
+}
+
+.alert-danger {
+    background: #ffebee;
+    border-left: 4px solid #c62828;
+    color: #b71c1c;
+}
+
+/* Filtros */
+.filtros {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stats {
+        grid-template-columns: 1fr;
+    }
+    .user-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    button {
+        width: 100%;
+        margin: 5px 0;
+    }
+    .filtros {
+        flex-direction: column;
+    }
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <!-- Header de usuario -->
+    <div class="user-header">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">👤</div>
+            <div class="user-details">
+                <h3 id="userName">Cargando...</h3>
+                <p id="userRole">Verificando permisos...</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-logout" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <div id="contenidoDinamico">
+        <div style="text-align: center; padding: 50px;">
+            <div class="loading"></div>
+            <p>Cargando sistema...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+
+// ==================== VERIFICACIÓN DE SESIÓN ====================
+let usuarioActual = null
+
+function verificarSesion() {
+    let usuarioGuardado = localStorage.getItem('usuarioActual')
+    if (!usuarioGuardado) {
+        window.location.href = 'login.html'
+        return false
+    }
+    
+    usuarioActual = JSON.parse(usuarioGuardado)
+    
+    document.getElementById('userName').innerHTML = `${getIconoRol(usuarioActual.rol)} ${usuarioActual.nombre}`
+    document.getElementById('userRole').innerHTML = getRolTexto(usuarioActual.rol)
+    document.getElementById('userAvatar').innerHTML = getAvatarRol(usuarioActual.rol)
+    
+    return true
+}
+
+function getIconoRol(rol) {
+    if (rol === 'admin') return '👑'
+    if (rol === 'supervisor') return '👔'
+    return '👨‍✈️'
+}
+
+function getAvatarRol(rol) {
+    if (rol === 'admin') return '👑'
+    if (rol === 'supervisor') return '👔'
+    return '🚛'
+}
+
+function getRolTexto(rol) {
+    if (rol === 'admin') return 'Administrador/Dueño - Acceso Total'
+    if (rol === 'supervisor') return 'Supervisor/Gerente - Acceso Limitado'
+    return 'Piloto/Conductor - Solo mis viajes'
+}
+
+function cerrarSesion() {
+    localStorage.removeItem('usuarioActual')
+    window.location.href = 'login.html'
+}
+
+// ==================== VARIABLES GLOBALES ====================
+let camiones = [], conductores = [], viajes = [], combustible = [], mantenimiento = [], gastos = []
+let viajesFiltrados = []
+let graficaGeneral, graficaCamionChart
+
+// ==================== FUNCIONES DE PERSISTENCIA ====================
+function cargarDatos() {
+    try {
+        let datos = JSON.parse(localStorage.getItem("TMEXPRESS_V8")) || {}
+        camiones = datos.camiones || []
+        conductores = datos.conductores || []
+        viajes = datos.viajes || []
+        combustible = datos.combustible || []
+        mantenimiento = datos.mantenimiento || []
+        gastos = datos.gastos || []
+        
+        if (camiones.length === 0) {
+            camiones = [
+                { placa: 'ABC-123', modelo: 'Volvo FH16', anio: 2022, estado: 'Activo' },
+                { placa: 'XYZ-789', modelo: 'Scania R500', anio: 2023, estado: 'Activo' }
+            ]
+            conductores = [
+                { nombre: 'Pedro Martínez', licencia: 'L-12345', telefono: '555-0101' },
+                { nombre: 'Juan López', licencia: 'L-67890', telefono: '555-0102' }
+            ]
+            viajes = [
+                { fecha: '2024-01-15', camion: 'ABC-123', conductor: 'Pedro Martínez', origen: 'Madrid', destino: 'Barcelona', comision: 500, kilometros: 620 },
+                { fecha: '2024-01-16', camion: 'XYZ-789', conductor: 'Juan López', origen: 'Valencia', destino: 'Sevilla', comision: 550, kilometros: 660 }
+            ]
+            guardarDatos()
+        }
+        
+        filtrarPorRol()
+    } catch(e) {}
+}
+
+function filtrarPorRol() {
+    if (usuarioActual.rol === 'piloto') {
+        viajesFiltrados = viajes.filter(v => v.conductor === usuarioActual.nombre)
+    } else {
+        viajesFiltrados = [...viajes]
+    }
+}
+
+function guardarDatos() {
+    let datos = { camiones, conductores, viajes, combustible, mantenimiento, gastos }
+    localStorage.setItem("TMEXPRESS_V8", JSON.stringify(datos))
+}
+
+function mostrarMensaje(mensaje, tipo) {
+    let div = document.createElement('div')
+    div.className = `alert alert-${tipo}`
+    div.style.position = 'fixed'
+    div.style.top = '20px'
+    div.style.right = '20px'
+    div.style.zIndex = '9999'
+    div.style.padding = '15px 20px'
+    div.style.borderRadius = '10px'
+    div.style.boxShadow = '0 5px 20px rgba(0,0,0,0.2)'
+    div.innerHTML = mensaje
+    document.body.appendChild(div)
+    setTimeout(() => div.remove(), 3000)
+}
+
+// ==================== RENDERIZADO DEL SISTEMA ====================
+function cargarSistema() {
+    let html = `
+        <div class="box">
+            <h2>📊 Panel de Control</h2>
+            <div class="stats">
+                <div class="stat">🚛 Camiones<h3 id="statCamiones">0</h3></div>
+                <div class="stat">👨‍✈️ Conductores<h3 id="statConductores">0</h3></div>
+                <div class="stat">🛣 Viajes<h3 id="statViajes">0</h3></div>
+                <div class="stat">⛽ Combustible $<h3 id="statCombustible">0</h3></div>
+                <div class="stat">🔧 Mantenimiento $<h3 id="statMantenimiento">0</h3></div>
+                <div class="stat">💰 Mi Ganancia $<h3 id="statGananciaPersonal">0</h3></div>
+            </div>
+        </div>
+    `
+    
+    if (usuarioActual.rol === 'admin') {
+        html += getAdminSections()
+    } else if (usuarioActual.rol === 'supervisor') {
+        html += getSupervisorSections()
+    } else {
+        html += getPilotoSections()
+    }
+    
+    document.getElementById('contenidoDinamico').innerHTML = html
+    inicializarFunciones()
+}
+
+function getAdminSections() {
+    return `
+        ${getCamionesSection()}
+        ${getConductoresSection()}
+        ${getViajesSection()}
+        ${getCombustibleSection()}
+        ${getMantenimientoSection()}
+        ${getGastosSection()}
+        ${getAnalisisSection()}
+    `
+}
+
+function getSupervisorSections() {
+    return `
+        ${getViajesSection()}
+        ${getCombustibleSection()}
+        ${getAnalisisSection()}
+    `
+}
+
+function getPilotoSections() {
+    return `
+        ${getViajesSection()}
+        <div class="box">
+            <h2>📊 Mi Resumen Personal</h2>
+            <div id="resumenPersonal"></div>
+        </div>
+    `
+}
+
+function getCamionesSection() {
+    return `
+        <div class="box">
+            <h2>🚛 Gestión de Camiones</h2>
+            <input id="camionPlaca" placeholder="Placa">
+            <input id="camionModelo" placeholder="Modelo">
+            <input id="camionAnio" placeholder="Año">
+            <button onclick="guardarCamion()">💾 Guardar</button>
+            <table><thead><tr><th>Placa</th><th>Modelo</th><th>Año</th><th>Acciones</th></tr></thead>
+            <tbody id="tablaCamiones"></tbody></table>
+        </div>
+    `
+}
+
+function getConductoresSection() {
+    return `
+        <div class="box">
+            <h2>👨‍✈️ Gestión de Conductores</h2>
+            <input id="conductorNombre" placeholder="Nombre">
+            <input id="conductorPassword" type="password" placeholder="Contraseña">
+            <button onclick="guardarConductor()">💾 Guardar</button>
+            <table><thead><tr><th>Nombre</th><th>Usuario</th><th>Acciones</th></tr></thead>
+            <tbody id="tablaConductores"></tbody></table>
+        </div>
+    `
+}
+
+function getViajesSection() {
+    return `
+        <div class="box">
+            <h2>🛣 Registro de Viajes</h2>
+            <div class="filtros">
+                <input type="text" id="filtroViajes" placeholder="🔍 Buscar..." onkeyup="filtrarViajes()">
+            </div>
+            <select id="viajeCamion"></select>
+            <select id="viajeConductor"></select>
+            <input id="origen" placeholder="Origen">
+            <input id="destino" placeholder="Destino">
+            <input id="kilometros" placeholder="KM" type="number">
+            <input id="comision" placeholder="Comisión $" type="number">
+            <input type="date" id="fechaViaje">
+            <button onclick="guardarViaje()">💾 Guardar</button>
+            <table><thead><tr><th>Fecha</th><th>Camión</th><th>Conductor</th><th>Origen</th><th>Destino</th><th>Comisión</th><th>KM</th><th>Acciones</th></tr></thead>
+            <tbody id="tablaViajes"></tbody></table>
+        </div>
+    `
+}
+
+function getCombustibleSection() {
+    return `
+        <div class="box">
+            <h2>⛽ Registro de Combustible</h2>
+            <select id="combustibleCamion"></select>
+            <input id="galones" placeholder="Galones" type="number" step="0.1">
+            <input id="precio" placeholder="Costo $" type="number">
+            <input type="date" id="fechaCombustible">
+            <button onclick="guardarCombustible()">💾 Guardar</button>
+            <table><thead><tr><th>Camión</th><th>Galones</th><th>Costo</th><th>Fecha</th><th>Acciones</th></tr></thead>
+            <tbody id="tablaCombustible"></tbody></table>
+        </div>
+    `
+}
+
+function getMantenimientoSection() {
+    return `
+        <div class="box">
+            <h2>🔧 Registro de Mantenimiento</h2>
+            <select id="mCamion"></select>
+            <input id="tipo" placeholder="Servicio">
+            <input id="costo" placeholder="Costo $" type="number">
+            <input type="date" id="fechaMantenimiento">
+            <button onclick="guardarMantenimiento()">💾 Guardar</button>
+            <table><thead><tr><th>Camión</th><th>Servicio</th><th>Costo</th><th>Fecha</th><th>Acciones</th></tr></thead>
+            <tbody id="tablaMantenimiento"></tbody></table>
+        </div>
+    `
+}
+
+function getGastosSection() {
+    return `
+        <div class="box">
+            <h2>💸 Gastos Generales</h2>
+            <select id="tipoGasto"><option>Combustible</option><option>Viáticos</option><option>Peajes</option><option>Mantenimiento</option><option>Otros</option></select>
+            <input id="montoGasto" placeholder="Monto" type="number">
+            <input type="date" id="fechaGasto">
+            <button onclick="guardarGasto()">💾 Guardar</button>
+            <table><thead><tr><th>Fecha</th><th>Tipo</th><th>Monto</th><th>Acciones</th></tr></thead>
+            <tbody id="tablaGastos"></tbody></table>
+        </div>
+    `
+}
+
+function getAnalisisSection() {
+    return `
+        <div class="box"><h2>📊 Gastos Generales</h2><canvas id="graficaGastos"></canvas></div>
+        <div class="box"><h2>🚛 Análisis por Camión</h2><select id="analisisCamion" onchange="analizarCamion()"></select><canvas id="graficaCamion"></canvas><div id="alertaMantenimiento"></div></div>
+        <div class="box"><h2>💰 Ganancia por Camión</h2><div id="ganancias"></div></div>
+        <div class="box"><h2>🏆 Rankings</h2><div id="ranking"></div></div>
+        <div class="box"><h2>⛽ Rendimiento KM/Galón</h2><div id="rendimiento"></div></div>
+        <div class="box"><h2>🤖 IA - Consumo</h2><div id="iaCombustible"></div></div>
+        <div class="box"><h2>💰 Resumen Financiero</h2><div id="resumenFinanciero"></div></div>
+        <div class="box"><h2>🛣 Rutas más usadas</h2><div id="rutasFrecuentes"></div></div>
+        <div class="box"><h2>📄 Reportes</h2><button onclick="pdfViajes()">📄 PDF Viajes</button> <button onclick="exportarExcel()">📊 Exportar CSV</button></div>
+    `
+}
+
+// ==================== FUNCIONES CRUD ====================
+function guardarCamion() {
+    let placa = document.getElementById('camionPlaca').value.trim().toUpperCase()
+    if (!placa) { mostrarMensaje('Ingrese placa', 'warning'); return }
+    if (camiones.some(c => c.placa === placa)) { mostrarMensaje('Placa ya existe', 'warning'); return }
+    camiones.push({ placa, modelo: document.getElementById('camionModelo').value || 'N/A', anio: document.getElementById('camionAnio').value || 'N/A' })
+    guardarDatos()
+    cargarTablas()
+    mostrarMensaje('✅ Camión guardado', 'success')
+}
+
+function guardarConductor() {
+    let nombre = document.getElementById('conductorNombre').value.trim()
+    if (!nombre) { mostrarMensaje('Ingrese nombre', 'warning'); return }
+    if (conductores.some(c => c.nombre === nombre)) { mostrarMensaje('Conductor ya existe', 'warning'); return }
+    let password = document.getElementById('conductorPassword').value || '1234'
+    conductores.push({ nombre })
+    let usuarios = JSON.parse(localStorage.getItem('usuariosTM')) || {}
+    usuarios[nombre.toLowerCase().replace(/\s/g, '')] = { password, rol: 'piloto', nombre }
+    localStorage.setItem('usuariosTM', JSON.stringify(usuarios))
+    guardarDatos()
+    cargarTablas()
+    mostrarMensaje('✅ Conductor guardado', 'success')
+}
+
+function guardarViaje() {
+    let camion = document.getElementById('viajeCamion').value
+    let conductor = document.getElementById('viajeConductor').value
+    if (!camion || !conductor) { mostrarMensaje('Seleccione campos', 'warning'); return }
+    viajes.push({
+        fecha: document.getElementById('fechaViaje').value || new Date().toISOString().split('T')[0],
+        camion, conductor,
+        origen: document.getElementById('origen').value || 'N/E',
+        destino: document.getElementById('destino').value || 'N/E',
+        comision: parseFloat(document.getElementById('comision').value) || 0,
+        kilometros: parseFloat(document.getElementById('kilometros').value) || 0
+    })
+    guardarDatos()
+    filtrarPorRol()
+    cargarTablas()
+    limpiarCamposViaje()
+    mostrarMensaje('✅ Viaje guardado', 'success')
+}
+
+function guardarCombustible() {
+    let camion = document.getElementById('combustibleCamion').value
+    if (!camion) { mostrarMensaje('Seleccione camión', 'warning'); return }
+    combustible.push({
+        camion,
+        galones: parseFloat(document.getElementById('galones').value) || 0,
+        precio: parseFloat(document.getElementById('precio').value) || 0,
+        fecha: document.getElementById('fechaCombustible').value || new Date().toISOString().split('T')[0]
+    })
+    guardarDatos()
+    cargarTablas()
+    mostrarMensaje('✅ Combustible registrado', 'success')
+}
+
+function guardarMantenimiento() {
+    if (usuarioActual.rol !== 'admin') return
+    let camion = document.getElementById('mCamion').value
+    if (!camion) { mostrarMensaje('Seleccione camión', 'warning'); return }
+    mantenimiento.push({
+        camion,
+        tipo: document.getElementById('tipo').value || 'General',
+        costo: parseFloat(document.getElementById('costo').value) || 0,
+        fecha: document.getElementById('fechaMantenimiento').value || new Date().toISOString().split('T')[0]
+    })
+    guardarDatos()
+    cargarTablas()
+    mostrarMensaje('✅ Mantenimiento registrado', 'success')
+}
+
+function guardarGasto() {
+    if (usuarioActual.rol !== 'admin') return
+    gastos.push({
+        tipo: document.getElementById('tipoGasto').value,
+        monto: parseFloat(document.getElementById('montoGasto').value) || 0,
+        fecha: document.getElementById('fechaGasto').value || new Date().toISOString().split('T')[0]
+    })
+    guardarDatos()
+    cargarTablas()
+    mostrarMensaje('✅ Gasto registrado', 'success')
+}
+
+function limpiarCamposViaje() {
+    document.getElementById('origen').value = ''
+    document.getElementById('destino').value = ''
+    document.getElementById('kilometros').value = ''
+    document.getElementById('comision').value = ''
+}
+
+// Eliminaciones
+function eliminarCamion(i) { if(confirm('¿Eliminar?')){ camiones.splice(i,1); guardarDatos(); cargarTablas(); mostrarMensaje('✅ Eliminado', 'success'); } }
+function eliminarConductor(i) { if(confirm('¿Eliminar?')){ conductores.splice(i,1); guardarDatos(); cargarTablas(); mostrarMensaje('✅ Eliminado', 'success'); } }
+function eliminarViaje(i) { if(confirm('¿Eliminar?')){ viajes.splice(i,1); filtrarPorRol(); guardarDatos(); cargarTablas(); mostrarMensaje('✅ Eliminado', 'success'); } }
+function eliminarCombustible(i) { if(confirm('¿Eliminar?')){ combustible.splice(i,1); guardarDatos(); cargarTablas(); mostrarMensaje('✅ Eliminado', 'success'); } }
+function eliminarMantenimiento(i) { if(confirm('¿Eliminar?')){ mantenimiento.splice(i,1); guardarDatos(); cargarTablas(); mostrarMensaje('✅ Eliminado', 'success'); } }
+function eliminarGasto(i) { if(confirm('¿Eliminar?')){ gastos.splice(i,1); guardarDatos(); cargarTablas(); mostrarMensaje('✅ Eliminado', 'success'); } }
+
+// ==================== TABLAS Y RENDERIZADO ====================
+function actualizarSelects() {
+    let selects = ['viajeCamion', 'combustibleCamion', 'mCamion', 'analisisCamion']
+    selects.forEach(id => {
+        let select = document.getElementById(id)
+        if (select) {
+            select.innerHTML = '<option value="">Seleccionar...</option>'
+            camiones.forEach(c => select.innerHTML += `<option value="${c.placa}">${c.placa}</option>`)
+        }
+    })
+    let condSelect = document.getElementById('viajeConductor')
+    if (condSelect) {
+        condSelect.innerHTML = '<option value="">Seleccionar...</option>'
+        conductores.forEach(c => condSelect.innerHTML += `<option value="${c.nombre}">${c.nombre}</option>`)
+        if (usuarioActual.rol === 'piloto') {
+            condSelect.value = usuarioActual.nombre
+            condSelect.disabled = true
+        } else {
+            condSelect.disabled = false
+        }
+    }
+}
+
+function actualizarStats() {
+    document.getElementById('statCamiones') && (document.getElementById('statCamiones').innerText = camiones.length)
+    document.getElementById('statConductores') && (document.getElementById('statConductores').innerText = conductores.length)
+    document.getElementById('statViajes') && (document.getElementById('statViajes').innerText = viajesFiltrados.length)
+    document.getElementById('statCombustible') && (document.getElementById('statCombustible').innerText = combustible.reduce((a,b)=>a+b.precio,0).toFixed(2))
+    document.getElementById('statMantenimiento') && (document.getElementById('statMantenimiento').innerText = mantenimiento.reduce((a,b)=>a+b.costo,0).toFixed(2))
+    
+    if (usuarioActual.rol === 'piloto') {
+        let ganancia = viajesFiltrados.reduce((a,b)=>a+b.comision,0)
+        document.getElementById('statGananciaPersonal') && (document.getElementById('statGananciaPersonal').innerText = ganancia.toFixed(2))
+    }
+}
+
+function cargarTablas() {
+    actualizarSelects()
+    
+    let tCamiones = document.getElementById('tablaCamiones')
+    if (tCamiones) tCamiones.innerHTML = camiones.map((c,i)=>`<tr><td>${c.placa}</td><td>${c.modelo}</td><td>${c.anio || 'N/A'}</td><td><button class="delete" onclick="eliminarCamion(${i})">🗑</button></td>`).join('')
+    
+    let tConductores = document.getElementById('tablaConductores')
+    if (tConductores) tConductores.innerHTML = conductores.map((c,i)=>`<tr><td>${c.nombre}</td><td>${c.nombre.toLowerCase().replace(/\s/g, '')}</td><td><button class="delete" onclick="eliminarConductor(${i})">🗑</button></td>`).join('')
+    
+    let tViajes = document.getElementById('tablaViajes')
+    if (tViajes) tViajes.innerHTML = viajesFiltrados.map((v,i)=>`<tr><td>${v.fecha}</td><td>${v.camion}</td><td>${v.conductor}</td><td>${v.origen}</td><td>${v.destino}</td><td>$${v.comision}</td><td>${v.kilometros}</td><td><button class="delete" onclick="eliminarViaje(${i})">🗑</button></td>`).join('')
+    
+    let tComb = document.getElementById('tablaCombustible')
+    if (tComb) tComb.innerHTML = combustible.map((c,i)=>`<tr><td>${c.camion}</td><td>${c.galones}</td><td>$${c.precio}</td><td>${c.fecha}</td><td><button class="delete" onclick="eliminarCombustible(${i})">🗑</button></td>`).join('')
+    
+    let tMant = document.getElementById('tablaMantenimiento')
+    if (tMant) tMant.innerHTML = mantenimiento.map((m,i)=>`<tr><td>${m.camion}</td><td>${m.tipo}</td><td>$${m.costo}</td><td>${m.fecha}</td><td><button class="delete" onclick="eliminarMantenimiento(${i})">🗑</button></td>`).join('')
+    
+    let tGastos = document.getElementById('tablaGastos')
+    if (tGastos) tGastos.innerHTML = gastos.map((g,i)=>`<tr><td>${g.fecha}</td><td>${g.tipo}</td><td>$${g.monto}</td><td><button class="delete" onclick="eliminarGasto(${i})">🗑</button></td>`).join('')
+    
+    actualizarStats()
+    
+    if (usuarioActual.rol !== 'piloto') {
+        graficaGeneralFunc()
+        ranking()
+        rendimiento()
+        gananciasCamion()
+        iaConsumo()
+        resumenFinanciero()
+        rutasFrecuentes()
+    } else {
+        mostrarResumenPersonal()
+    }
+}
+
+function filtrarViajes() {
+    let filtro = document.getElementById('filtroViajes')?.value.toLowerCase() || ''
+    if (usuarioActual.rol === 'piloto') {
+        viajesFiltrados = viajes.filter(v => v.conductor === usuarioActual.nombre && (v.camion.toLowerCase().includes(filtro) || v.origen.toLowerCase().includes(filtro)))
+    } else {
+        viajesFiltrados = viajes.filter(v => v.camion.toLowerCase().includes(filtro) || v.conductor.toLowerCase().includes(filtro) || v.origen.toLowerCase().includes(filtro))
+    }
+    cargarTablas()
+}
+
+function mostrarResumenPersonal() {
+    let ganancia = viajesFiltrados.reduce((a,b)=>a+b.comision,0)
+    let viajesRealizados = viajesFiltrados.length
+    let kmRecorridos = viajesFiltrados.reduce((a,b)=>a+b.kilometros,0)
+    document.getElementById('resumenPersonal') && (document.getElementById('resumenPersonal').innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;">
+            <div style="background:#e8f5e9;padding:20px;border-radius:10px;text-align:center;border-left:4px solid #2e7d32;"><strong>💰 Mi Ganancia</strong><br><span style="font-size:28px;color:#ff5722;">$${ganancia}</span></div>
+            <div style="background:#e3f2fd;padding:20px;border-radius:10px;text-align:center;border-left:4px solid #1565c0;"><strong>🛣 Viajes</strong><br><span style="font-size:28px;color:#ff5722;">${viajesRealizados}</span></div>
+            <div style="background:#fff3e0;padding:20px;border-radius:10px;text-align:center;border-left:4px solid #ff5722;"><strong>📏 KM Recorridos</strong><br><span style="font-size:28px;color:#ff5722;">${kmRecorridos}</span></div>
+        </div>
+    `)
+}
+
+// Funciones de análisis
+function graficaGeneralFunc() {
+    if (!document.getElementById('graficaGastos')) return
+    let gastosObj = { combustible: combustible.reduce((a,b)=>a+b.precio,0), mantenimiento: mantenimiento.reduce((a,b)=>a+b.costo,0), otros: gastos.reduce((a,b)=>a+b.monto,0) }
+    if (graficaGeneral) graficaGeneral.destroy()
+    let ctx = document.getElementById('graficaGastos').getContext('2d')
+    graficaGeneral = new Chart(ctx, { type: 'bar', data: { labels: ['Combustible','Mantenimiento','Otros'], datasets: [{ data: [gastosObj.combustible, gastosObj.mantenimiento, gastosObj.otros], backgroundColor: ['#ff5722','#000000','#e64a19'] }] } })
+}
+
+function analizarCamion() {
+    let camion = document.getElementById('analisisCamion')?.value
+    if (!camion) return
+    let comb = combustible.filter(c=>c.camion===camion).reduce((a,b)=>a+b.precio,0)
+    let mant = mantenimiento.filter(m=>m.camion===camion).reduce((a,b)=>a+b.costo,0)
+    if (graficaCamionChart) graficaCamionChart.destroy()
+    let ctx = document.getElementById('graficaCamion')?.getContext('2d')
+    if (ctx) graficaCamionChart = new Chart(ctx, { type: 'pie', data: { labels: ['Combustible','Mantenimiento'], datasets: [{ data: [comb,mant], backgroundColor: ['#ff5722','#000000'] }] } })
+    let alerta = document.getElementById('alertaMantenimiento')
+    if (alerta) alerta.innerHTML = mant > comb ? '<div class="alert alert-warning">⚠ Alto mantenimiento</div>' : '<div class="alert alert-success">✅ Normal</div>'
+}
+
+function ranking() {
+    let camRank = {}, condRank = {}
+    viajes.forEach(v=>{ camRank[v.camion]=(camRank[v.camion]||0)+1; condRank[v.conductor]=(condRank[v.conductor]||0)+1 })
+    let html = '<h3>🏆 Top Camiones</h3>' + Object.entries(camRank).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>`<p>${k}: ${v} viajes</p>`).join('')
+    html += '<h3>👨‍✈️ Top Conductores</h3>' + Object.entries(condRank).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>`<p>${k}: ${v} viajes</p>`).join('')
+    document.getElementById('ranking') && (document.getElementById('ranking').innerHTML = html)
+}
+
+function rendimiento() {
+    let km={}, gal={}
+    viajes.forEach(v=>km[v.camion]=(km[v.camion]||0)+v.kilometros)
+    combustible.forEach(c=>gal[c.camion]=(gal[c.camion]||0)+c.galones)
+    let html = ''
+    camiones.forEach(c=>{ let r = gal[c.placa] ? (km[c.placa]/gal[c.placa]).toFixed(2) : 0; html+=`<p>${c.placa}: <strong style="color:#ff5722;">${r} km/gal</strong></p>` })
+    document.getElementById('rendimiento') && (document.getElementById('rendimiento').innerHTML = html)
+}
+
+function gananciasCamion() {
+    if (usuarioActual.rol === 'piloto') return
+    let html = ''
+    camiones.forEach(c=>{
+        let ingresos = viajes.filter(v=>v.camion===c.placa).reduce((a,b)=>a+b.comision,0)
+        let gastosC = combustible.filter(cb=>cb.camion===c.placa).reduce((a,b)=>a+b.precio,0)
+        let gastosM = mantenimiento.filter(m=>m.camion===c.placa).reduce((a,b)=>a+b.costo,0)
+        let ganancia = ingresos - gastosC - gastosM
+        html += `<p><strong>${c.placa}</strong>: <span style="color:${ganancia>=0?'#2e7d32':'#c62828'};font-weight:bold;">$${ganancia.toFixed(2)}</span></p>`
+    })
+    document.getElementById('ganancias') && (document.getElementById('ganancias').innerHTML = html)
+}
+
+function iaConsumo() {
+    let km={}, gal={}
+    viajes.forEach(v=>km[v.camion]=(km[v.camion]||0)+v.kilometros)
+    combustible.forEach(c=>gal[c.camion]=(gal[c.camion]||0)+c.galones)
+    let rendimientos = camiones.map(c=> gal[c.placa] ? km[c.placa]/gal[c.placa] : 0).filter(r=>r>0)
+    if(rendimientos.length===0){ document.getElementById('iaCombustible') && (document.getElementById('iaCombustible').innerHTML='Sin datos'); return}
+    let promedio = rendimientos.reduce((a,b)=>a+b,0)/rendimientos.length
+    let html = ''
+    camiones.forEach(c=>{
+        let r = gal[c.placa] ? km[c.placa]/gal[c.placa] : 0
+        if(r>0 && r<promedio*0.75) html+=`<p>⚠️ ${c.placa}: <strong style="color:#c62828;">${r.toFixed(2)} km/gal</strong> (promedio: ${promedio.toFixed(2)})</p>`
+    })
+    document.getElementById('iaCombustible') && (document.getElementById('iaCombustible').innerHTML = html || '<p style="color:#2e7d32;">✅ Todos los camiones operan normalmente</p>')
+}
+
+function resumenFinanciero() {
+    let ingresos = viajes.reduce((a,b)=>a+b.comision,0)
+    let gastosComb = combustible.reduce((a,b)=>a+b.precio,0)
+    let gastosMant = mantenimiento.reduce((a,b)=>a+b.costo,0)
+    let gastosGen = gastos.reduce((a,b)=>a+b.monto,0)
+    let ganancia = ingresos - gastosComb - gastosMant - gastosGen
+    document.getElementById('resumenFinanciero') && (document.getElementById('resumenFinanciero').innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;">
+            <div style="background:#e8f5e9;padding:15px;border-radius:10px;"><strong>💰 Ingresos</strong><br><span style="font-size:24px;color:#ff5722;">$${ingresos}</span></div>
+            <div style="background:#ffebee;padding:15px;border-radius:10px;"><strong>💸 Egresos</strong><br><span style="font-size:24px;color:#ff5722;">$${(gastosComb+gastosMant+gastosGen).toFixed(2)}</span></div>
+            <div style="background:#fff3e0;padding:15px;border-radius:10px;"><strong>📊 Ganancia</strong><br><span style="font-size:24px;color:${ganancia>=0?'#2e7d32':'#c62828'};">$${ganancia.toFixed(2)}</span></div>
+        </div>
+    `)
+}
+
+function rutasFrecuentes() {
+    let rutas = {}
+    viajes.forEach(v=>{ let r = `${v.origen} → ${v.destino}`; rutas[r]=(rutas[r]||0)+1 })
+    let html = Object.entries(rutas).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>`<p>📍 ${k}: ${v} viajes</p>`).join('')
+    document.getElementById('rutasFrecuentes') && (document.getElementById('rutasFrecuentes').innerHTML = html || 'Sin datos')
+}
+
+function pdfViajes() {
+    const { jsPDF } = window.jspdf
+    let doc = new jsPDF()
+    doc.setTextColor(0, 0, 0)
+    doc.setFontSize(18)
+    doc.text('Reporte de Viajes - TM Express', 20, 20)
+    doc.setTextColor(255, 87, 34)
+    doc.setFontSize(12)
+    doc.text(`Fecha: ${new Date().toLocaleString()}`, 20, 30)
+    doc.setTextColor(0, 0, 0)
+    let y = 40
+    viajesFiltrados.forEach(v=>{ doc.text(`${v.fecha} | ${v.camion} | ${v.conductor} | ${v.origen}→${v.destino} | $${v.comision}`, 20, y); y+=10 })
+    doc.save('viajes.pdf')
+    mostrarMensaje('📄 PDF generado', 'success')
+}
+
+function exportarExcel() {
+    let csv = "Fecha,Camión,Conductor,Origen,Destino,Comisión,KM\n"
+    viajesFiltrados.forEach(v=> csv += `${v.fecha},${v.camion},${v.conductor},${v.origen},${v.destino},${v.comision},${v.kilometros}\n`)
+    let blob = new Blob([csv], {type:'text/csv'})
+    let link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'viajes.csv'
+    link.click()
+    mostrarMensaje('📊 CSV exportado', 'success')
+}
+
+function inicializarFunciones() {
+    cargarDatos()
+    cargarTablas()
+}
+
+// ==================== INICIALIZACIÓN ====================
+if (verificarSesion()) {
+    cargarSistema()
+}
+
+</script>
+
+</body>
+</html>
